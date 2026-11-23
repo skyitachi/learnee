@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<style>
+  html, body { margin: 0; padding: 0; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; }
+  .sheet {
+    display: flex; justify-content: center; align-items: flex-start;
+    padding: 20px 0;
+  }
+  svg { display: block; }
+</style>
+</head>
+<body>
+<div class="sheet">
+<svg width="960" height="720" viewBox="0 0 960 720" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,'PingFang SC','Microsoft YaHei',sans-serif">
+  <rect x="0" y="0" width="960" height="720" fill="#fdfdfb"/>
+
+  <!-- 标题 -->
+  <text x="480" y="34" font-size="22" font-weight="700" text-anchor="middle" fill="#1a1a1a">鱼缸小卫士 · 浑浊度检测电路（LM393 比较器版）</text>
+
+  <!-- 图例 -->
+  <g font-size="12.5" fill="#333">
+    <line x1="250" y1="52" x2="286" y2="52" stroke="#d32f2f" stroke-width="3"/><text x="292" y="56">＋5V 电源</text>
+    <line x1="392" y1="52" x2="428" y2="52" stroke="#1565c0" stroke-width="3"/><text x="434" y="56">GND 地</text>
+    <line x1="524" y1="52" x2="560" y2="52" stroke="#2e7d32" stroke-width="2.5"/><text x="566" y="56">传感/阈值信号</text>
+    <line x1="676" y1="52" x2="712" y2="52" stroke="#ef6c00" stroke-width="2.5"/><text x="718" y="56">报警输出</text>
+  </g>
+
+  <!-- 顶部 VCC 轨 -->
+  <line x1="60" y1="92" x2="900" y2="92" stroke="#d32f2f" stroke-width="4"/>
+  <text x="60" y="82" font-size="13" fill="#d32f2f" font-weight="600">＋4.5~5V（接面包板 ＋ 轨）</text>
+
+  <!-- 底部 GND 轨 -->
+  <line x1="60" y1="650" x2="900" y2="650" stroke="#1565c0" stroke-width="4"/>
+  <text x="60" y="676" font-size="13" fill="#1565c0" font-weight="600">GND（接面包板 − 轨）</text>
+
+  <!-- 地符号 helper 用：三条横线 -->
+  <!-- ① 光源 LED -->
+  <g>
+    <text x="110" y="120" font-size="14" font-weight="700" fill="#1a1a1a">① 光源（常亮）</text>
+    <line x1="135" y1="92" x2="135" y2="130" stroke="#d32f2f" stroke-width="2.5"/>
+    <rect x="115" y="130" width="40" height="20" fill="#e8cfa6" stroke="#8d6e63" stroke-width="1.5"/>
+    <text x="163" y="145" font-size="12" fill="#5d4037">220Ω</text>
+    <line x1="135" y1="150" x2="135" y2="205" stroke="#333" stroke-width="2"/>
+    <!-- LED 符号 -->
+    <line x1="108" y1="205" x2="162" y2="205" stroke="#d32f2f" stroke-width="2"/>
+    <polygon points="122,205 148,205 135,255" fill="#ffcdd2" stroke="#d32f2f" stroke-width="2"/>
+    <line x1="154" y1="222" x2="168" y2="212" stroke="#d32f2f" stroke-width="1.6"/>
+    <line x1="154" y1="240" x2="168" y2="250" stroke="#d32f2f" stroke-width="1.6"/>
+    <text x="172" y="235" font-size="12" fill="#333">LED 光源</text>
+    <line x1="135" y1="255" x2="135" y2="300" stroke="#1565c0" stroke-width="2"/>
+    <line x1="100" y1="300" x2="170" y2="300" stroke="#1565c0" stroke-width="2"/>
+    <line x1="110" y1="310" x2="160" y2="310" stroke="#1565c0" stroke-width="2"/>
+    <line x1="122" y1="320" x2="148" y2="320" stroke="#1565c0" stroke-width="2"/>
+  </g>
+
+  <!-- ② 传感分压 -->
+  <g>
+    <text x="250" y="120" font-size="14" font-weight="700" fill="#1a1a1a">② 传感分压</text>
+    <line x1="300" y1="92" x2="300" y2="130" stroke="#d32f2f" stroke-width="2.5"/>
+    <rect x="280" y="130" width="40" height="20" fill="#e8cfa6" stroke="#8d6e63" stroke-width="1.5"/>
+    <text x="328" y="145" font-size="12" fill="#5d4037">10kΩ</text>
+    <line x1="300" y1="150" x2="300" y2="185" stroke="#333" stroke-width="2"/>
+    <circle cx="300" cy="190" r="5" fill="#2e7d32"/>
+    <text x="312" y="195" font-size="13" font-weight="700" fill="#2e7d32">S</text>
+    <!-- LDR 本体 -->
+    <rect x="282" y="205" width="36" height="40" fill="#dbe4ee" stroke="#5c6bc0" stroke-width="1.5"/>
+    <line x1="300" y1="190" x2="300" y2="260" stroke="#333" stroke-width="2"/>
+    <line x1="362" y1="212" x2="344" y2="222" stroke="#5c6bc0" stroke-width="1.8"/>
+    <line x1="362" y1="238" x2="344" y2="228" stroke="#5c6bc0" stroke-width="1.8"/>
+    <text x="368" y="252" font-size="12" fill="#333">LDR</text>
+    <line x1="300" y1="260" x2="300" y2="300" stroke="#1565c0" stroke-width="2"/>
+    <line x1="265" y1="300" x2="335" y2="300" stroke="#1565c0" stroke-width="2"/>
+    <line x1="275" y1="310" x2="325" y2="310" stroke="#1565c0" stroke-width="2"/>
+    <line x1="287" y1="320" x2="313" y2="320" stroke="#1565c0" stroke-width="2"/>
+  </g>
+
+  <!-- ③ 电位器 -->
+  <g>
+    <text x="438" y="120" font-size="14" font-weight="700" fill="#1a1a1a">③ 阈值电位器（调灵敏度）</text>
+    <line x1="450" y1="160" x2="450" y2="92" stroke="#d32f2f" stroke-width="2.5"/>
+    <rect x="450" y="150" width="120" height="20" fill="#f5f0e6" stroke="#8d6e63" stroke-width="1.5"/>
+    <text x="472" y="140" font-size="12" fill="#5d4037">10kΩ</text>
+    <line x1="570" y1="160" x2="570" y2="205" stroke="#1565c0" stroke-width="2"/>
+    <line x1="535" y1="205" x2="605" y2="205" stroke="#1565c0" stroke-width="2"/>
+    <line x1="545" y1="215" x2="595" y2="215" stroke="#1565c0" stroke-width="2"/>
+    <line x1="557" y1="225" x2="583" y2="225" stroke="#1565c0" stroke-width="2"/>
+    <!-- 中间抽头 -->
+    <line x1="510" y1="170" x2="510" y2="192" stroke="#2e7d32" stroke-width="2"/>
+    <path d="M 510 190 L 430 190 L 430 310 L 468 310" fill="none" stroke="#2e7d32" stroke-width="2.5"/>
+  </g>
+
+  <!-- ④ LM393 -->
+  <g>
+    <rect x="490" y="240" width="140" height="170" rx="8" fill="#263238"/>
+    <text x="560" y="318" font-size="17" font-weight="700" fill="#ffffff" text-anchor="middle">LM393</text>
+    <text x="560" y="338" font-size="11" fill="#b0bec5" text-anchor="middle">（只用比较器 1）</text>
+
+    <!-- 左引脚 -->
+    <line x1="468" y1="270" x2="490" y2="270" stroke="#37474f" stroke-width="2"/>
+    <line x1="468" y1="310" x2="490" y2="310" stroke="#37474f" stroke-width="2"/>
+    <line x1="468" y1="350" x2="490" y2="350" stroke="#37474f" stroke-width="2"/>
+    <line x1="468" y1="390" x2="490" y2="390" stroke="#37474f" stroke-width="2"/>
+    <text x="463" y="274" font-size="11.5" fill="#333" text-anchor="end">1 OUT1</text>
+    <text x="463" y="314" font-size="11.5" fill="#333" text-anchor="end">2 IN1−</text>
+    <text x="463" y="354" font-size="11.5" fill="#333" text-anchor="end">3 IN1＋</text>
+    <text x="463" y="394" font-size="11.5" fill="#333" text-anchor="end">4 GND</text>
+
+    <!-- 右引脚 -->
+    <line x1="630" y1="270" x2="652" y2="270" stroke="#37474f" stroke-width="2"/>
+    <line x1="630" y1="310" x2="652" y2="310" stroke="#37474f" stroke-width="2"/>
+    <line x1="630" y1="350" x2="652" y2="350" stroke="#37474f" stroke-width="2"/>
+    <line x1="630" y1="390" x2="652" y2="390" stroke="#37474f" stroke-width="2"/>
+    <text x="657" y="274" font-size="11.5" fill="#333" text-anchor="start">8 VCC</text>
+    <text x="657" y="314" font-size="11.5" fill="#333" text-anchor="start">7 OUT2</text>
+    <text x="657" y="354" font-size="11.5" fill="#333" text-anchor="start">6 IN2−</text>
+    <text x="657" y="394" font-size="11.5" fill="#333" text-anchor="start">5 IN2＋</text>
+
+    <!-- pin8 VCC 上接 -->
+    <line x1="641" y1="270" x2="641" y2="210" stroke="#d32f2f" stroke-width="2"/>
+    <circle cx="641" cy="205" r="4" fill="#d32f2f"/>
+    <text x="650" y="200" font-size="11.5" fill="#d32f2f">VCC</text>
+
+    <!-- pin4 GND 下接 -->
+    <line x1="479" y1="390" x2="479" y2="428" stroke="#1565c0" stroke-width="2"/>
+    <line x1="452" y1="428" x2="506" y2="428" stroke="#1565c0" stroke-width="2"/>
+    <line x1="460" y1="438" x2="498" y2="438" stroke="#1565c0" stroke-width="2"/>
+    <line x1="470" y1="448" x2="488" y2="448" stroke="#1565c0" stroke-width="2"/>
+
+    <!-- S → pin3 -->
+    <path d="M 300 190 L 440 190 L 440 350 L 468 350" fill="none" stroke="#2e7d32" stroke-width="2.5"/>
+
+    <!-- 交叉点：OUT1 竖线 x=452 与 pin2/pin3 水平段，画跳线 -->
+  </g>
+
+  <!-- ⑤ OUT1 上拉 -->
+  <g>
+    <line x1="468" y1="270" x2="452" y2="270" stroke="#ef6c00" stroke-width="2.5"/>
+    <line x1="452" y1="270" x2="452" y2="210" stroke="#ef6c00" stroke-width="2.5"/>
+    <rect x="432" y="195" width="40" height="20" fill="#e8cfa6" stroke="#8d6e63" stroke-width="1.5"/>
+    <text x="478" y="210" font-size="12" fill="#5d4037">10kΩ</text>
+    <line x1="452" y1="195" x2="452" y2="178" stroke="#ef6c00" stroke-width="2.5"/>
+    <circle cx="452" cy="173" r="4" fill="#ef6c00"/>
+    <text x="461" y="168" font-size="11.5" fill="#ef6c00">VCC</text>
+    <!-- 跳线半圆在 x=452, y=310 与 y=350 -->
+    <path d="M 448 314 A 6 6 0 0 1 456 314" fill="none" stroke="#ef6c00" stroke-width="1.8"/>
+    <path d="M 448 354 A 6 6 0 0 1 456 354" fill="none" stroke="#ef6c00" stroke-width="1.8"/>
+    <text x="460" y="470" font-size="11" fill="#555">（小半圆 = 跳线，交叉不连接）</text>
+  </g>
+
+  <!-- ⑥ 报警驱动 -->
+  <g>
+    <text x="330" y="470" font-size="14" font-weight="700" fill="#1a1a1a">⑥ 报警输出</text>
+    <line x1="452" y1="270" x2="452" y2="500" stroke="#ef6c00" stroke-width="2.5"/>
+    <line x1="452" y1="500" x2="452" y2="540" stroke="#ef6c00" stroke-width="2.5"/>
+    <!-- 1k 电阻 -->
+    <rect x="452" y="498" width="48" height="20" fill="#e8cfa6" stroke="#8d6e63" stroke-width="1.5"/>
+    <text x="462" y="536" font-size="12" fill="#5d4037">1kΩ</text>
+    <line x1="500" y1="508" x2="516" y2="508" stroke="#ef6c00" stroke-width="2.5"/>
+
+    <!-- S8050 -->
+    <circle cx="540" cy="540" r="26" fill="#fff" stroke="#37474f" stroke-width="2"/>
+    <text x="540" y="545" font-size="14" font-weight="700" fill="#333" text-anchor="middle">S8050</text>
+    <!-- 基极 B 左 -->
+    <line x1="516" y1="508" x2="516" y2="540" stroke="#ef6c00" stroke-width="2.5"/>
+    <text x="510" y="500" font-size="11" fill="#333" text-anchor="end">B</text>
+    <!-- 发射极 E 下 -->
+    <line x1="540" y1="566" x2="540" y2="600" stroke="#1565c0" stroke-width="2.5"/>
+    <text x="548" y="592" font-size="11" fill="#333">E</text>
+    <line x1="508" y1="600" x2="572" y2="600" stroke="#1565c0" stroke-width="2"/>
+    <line x1="518" y1="610" x2="562" y2="610" stroke="#1565c0" stroke-width="2"/>
+    <line x1="530" y1="620" x2="550" y2="620" stroke="#1565c0" stroke-width="2"/>
+    <!-- 集电极 C 上 -->
+    <line x1="540" y1="514" x2="540" y2="470" stroke="#ef6c00" stroke-width="2.5"/>
+    <text x="548" y="480" font-size="11" fill="#333">C</text>
+
+    <!-- 集电极节点分两路 -->
+    <line x1="540" y1="470" x2="660" y2="470" stroke="#ef6c00" stroke-width="2.5"/>
+    <line x1="540" y1="470" x2="540" y2="440" stroke="#ef6c00" stroke-width="2.5"/>
+
+    <!-- 蜂鸣器支路（上） -->
+    <path d="M 524 440 L 556 440" stroke="#ef6c00" stroke-width="2.5"/>
+    <rect x="528" y="424" width="24" height="16" fill="#ffecb3" stroke="#f9a825" stroke-width="1.5"/>
+    <text x="560" y="437" font-size="12" fill="#333">蜂鸣器</text>
+    <line x1="540" y1="424" x2="540" y2="408" stroke="#d32f2f" stroke-width="2"/>
+    <circle cx="540" cy="404" r="4" fill="#d32f2f"/>
+    <text x="548" y="408" font-size="11" fill="#d32f2f">VCC</text>
+
+    <!-- 报警 LED 支路（右） -->
+    <line x1="660" y1="470" x2="660" y2="470" stroke="#ef6c00" stroke-width="2.5"/>
+    <line x1="660" y1="470" x2="660" y2="438" stroke="#d32f2f" stroke-width="2"/>
+    <rect x="640" y="424" width="40" height="20" fill="#e8cfa6" stroke="#8d6e63" stroke-width="1.5"/>
+    <text x="650" y="412" font-size="12" fill="#5d4037">330Ω</text>
+    <line x1="660" y1="424" x2="660" y2="408" stroke="#d32f2f" stroke-width="2"/>
+    <line x1="634" y1="470" x2="686" y2="470" stroke="#d32f2f" stroke-width="2"/>
+    <polygon points="648,470 672,470 660,502" fill="#ffcdd2" stroke="#d32f2f" stroke-width="2"/>
+    <text x="690" y="478" font-size="12" fill="#333">红灯（报警）</text>
+  </g>
+</svg>
+</div>
+</body>
+</html>
