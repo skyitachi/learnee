@@ -203,10 +203,12 @@ def led(row, c_cathode, c_anode, num=None):
     return o
 
 
-def to92(row, c_c, c_b, c_e, num=None, label=None):
-    """TO-92 三极管：三腿相邻三列垂直插入，本体是半圆 D 形"""
+def to92(row, c_e, c_b, c_c, num=None, label=None):
+    """TO-92 三极管：三腿相邻三列垂直插入，本体是半圆 D 形。
+    引脚顺序按实物：平面朝自己、引脚朝下，左→右为 E-B-C
+    （PN2222 / PN2222A / S8050 / 2N3904 均为此顺序）。"""
     y = ROW_Y[row]
-    xs = [cx(c) for c in (c_c, c_b, c_e)]
+    xs = [cx(c) for c in (c_e, c_b, c_c)]
     left, right = min(xs) - 3.0, max(xs) + 3.0
     body_h, body_top = 8.0, y - 8.0
     o = []
@@ -218,12 +220,19 @@ def to92(row, c_c, c_b, c_e, num=None, label=None):
              % (left, body_top + body_h, left, body_top + 4.5, (right - left) / 2, 4.5,
                 right, body_top + 4.5, right, body_top + body_h))
     o.append(text((left + right) / 2, body_top + body_h - 1.4, 'PN2222', 2.4, '#cfd8dc', weight='600', halo=False))
-    for x, lab, col in zip(xs, ('C', 'B', 'E'), ('#ef6c00', C_GREEN, C_BLUE)):
-        o.append(text(x, y + 4.6, lab, 3.0, col, weight='700'))
     for x in xs:
         o.append(_hole_dot(x, y))
     if num:
         o.append(badge(right + 4.4, body_top - 1.6, num))
+    return o
+
+
+def to92_labels(row, c_e, c_b, c_c):
+    """三极管引脚字母，单独一层最后绘制，避免被跳线盖住"""
+    y = ROW_Y[row]
+    o = []
+    for c, lab, col in zip((c_e, c_b, c_c), ('E', 'B', 'C'), (C_BLUE, C_GREEN, C_ORANGE)):
+        o.append(text(cx(c) - 2.4, y + 5.4, lab, 3.0, col, weight='700'))
     return o
 
 
@@ -302,6 +311,11 @@ def build(spec):
     for pts, col in spec['wires']:
         body += jumper(pts, col)
 
+    # 顶层标注（引脚字母等，必须在跳线之上）
+    for layer in spec.get('labels', []):
+        for line in layer:
+            body.append(line)
+
     body.append('</g>')
     g += body
 
@@ -320,13 +334,16 @@ def build(spec):
         g.append('<text x="%.1f" y="%.1f" font-size="13" fill="#333" '
                  'font-family="-apple-system,\'PingFang SC\',sans-serif">%s</text>'
                  % (x + 44, ly, lab))
-    # 元件表
+    # 元件表（三列换行，避免长说明串到下一格）
     tbl = spec.get('table') or []
     if tbl:
-        ty = px(oy + BOARD_H) + 96
-        step = min(250, (W * S - 120) / max(len(tbl), 1))
+        per_row = 3
+        ty0 = px(oy + BOARD_H) + 96
+        colw = (W * S - 130) / per_row
         for i, (num, name, note) in enumerate(tbl):
-            x = 70 + i * step
+            r, c = divmod(i, per_row)
+            x = 70 + c * colw
+            ty = ty0 + r * 48
             g.append('<circle cx="%.0f" cy="%.0f" r="11" fill="#37474f"/>'
                      '<text x="%.0f" y="%.0f" font-size="12" fill="#fff" text-anchor="middle" '
                      'font-weight="700">%d</text>' % (x, ty, x, ty + 4, num))
@@ -353,7 +370,7 @@ def page(svg, title):
 
 def night_light():
     """小夜灯最终布局：
-       分压器 J/I 行第 7–13 列；三极管 G 行第 17/18/19 列（C-B-E）；
+       分压器 J/I 行第 7–13 列；三极管 G 行第 17/18/19 列（E-B-C，按实物引脚顺序）；
        LED + 220Ω 放 J 行第 22–27 列；基极从 J 行拉过去，集电极走 H 行拉过去。"""
     parts = [
         resistor('J', 7, 10, '47kΩ', ('黄', '紫', '橙', '金'), num=2),
@@ -367,8 +384,9 @@ def night_light():
         ([(cx(7), ROW_Y['J']), (cx(7), RAIL['tp'])], C_RED),
         ([(cx(13), ROW_Y['I']), (cx(13), RAIL['tm'])], C_BLUE),
         ([(cx(10), ROW_Y['J']), (cx(18), ROW_Y['J']), (cx(18), ROW_Y['G'] - 8.6)], C_GREEN),
-        ([(cx(17), ROW_Y['H']), (cx(22), ROW_Y['H']), (cx(22), ROW_Y['J'])], C_ORANGE),
-        ([(cx(19), ROW_Y['G']), (cx(19), ROW_Y['F']), (cx(28), ROW_Y['F']),
+        ([(cx(19), ROW_Y['G']), (cx(19), ROW_Y['H']), (cx(22), ROW_Y['H']),
+          (cx(22), ROW_Y['J'])], C_ORANGE),
+        ([(cx(17), ROW_Y['G']), (cx(17), ROW_Y['F']), (cx(28), ROW_Y['F']),
           (cx(28), RAIL['tm'])], C_BLUE),
         ([(cx(27), ROW_Y['J']), (cx(27), RAIL['tp'])], C_RED),
         ([(-26, 103), (-6, 103), (-6, RAIL['tp']), (cx(1), RAIL['tp'])], C_RED),
@@ -385,13 +403,14 @@ def night_light():
         title='魔法小夜灯 · 实物接线图（面包板）',
         subtitle='元件按编号插、跳线照颜色走；插完按施工文档第 3 节再核对一遍',
         parts=parts, wires=wires, notes=[x_mark],
+        labels=[to92_labels('G', 17, 18, 19)],
         legend=[(C_RED, '＋4.5V'), (C_BLUE, 'GND'), (C_GREEN, '节点 X → 基极 B'),
                 (C_ORANGE, '集电极 C → LED')],
         table=[
             (1, '3×AA 电池盒', '红线→＋轨，黑线→－轨'),
             (2, '47kΩ 电阻', '第 7→10 列 J 行'),
             (3, '光敏电阻', '第 10→13 列 I 行'),
-            (4, 'PN2222 三极管', '第 17/18/19 列 G 行（C-B-E）'),
+            (4, 'PN2222 三极管', '第 17/18/19 列 G 行（E-B-C，左→右）'),
             (5, 'LED', '第 22→23 列 J 行（＋长脚在 23）'),
             (6, '220Ω 电阻', '第 23→27 列 J 行'),
         ],
