@@ -1,0 +1,20 @@
+.gitignore
+  h_5a1c62fd74efa2 1-9
+README.md
+  h_5a1c62fd74efa2 15,34-35,38-39
+magic-night-light/魔法小夜灯实物图.html
+  h_5a1c62fd74efa2 1-17
+tools/breadboard_mockup.py
+  h_5a1c62fd74efa2 1-407
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7af2c4f75d0d8d54f35fcba834220719c98630fa",
+  "prompts": {},
+  "humans": {
+    "h_5a1c62fd74efa2": {
+      "author": "skyitachi <skbysp@gmail.com>"
+    }
+  }
+}
