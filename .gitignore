@@ -1,0 +1,9 @@
+# WorkBuddy 本地项目数据（工作日志等，不入库）
+.workbuddy/
+
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
