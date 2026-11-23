@@ -10,8 +10,8 @@
 
 | 文件 | 说明 |
 |---|---|
-| [魔法小夜灯-施工文档.md](魔法小夜灯-施工文档.md) | 原理、材料清单、接线、分步搭建、故障排查、任务卡 |
-| [魔法小夜灯电路图.html](魔法小夜灯电路图.html) | 电路原理图（PN2222 三极管版） |
+| [魔法小夜灯-施工文档.md](magic-night-light/魔法小夜灯-施工文档.md) | 原理、材料清单、接线、分步搭建、故障排查、任务卡 |
+| [魔法小夜灯电路图.html](magic-night-light/魔法小夜灯电路图.html) | 电路原理图（PN2222 三极管版） |
 
 ### 2. 鱼缸小卫士（水质监测与报警器）
 
@@ -19,27 +19,29 @@
 
 | 文件 | 说明 |
 |---|---|
-| [鱼缸小卫士-施工文档.md](鱼缸小卫士-施工文档.md) | Arduino 版完整文档（DS18B20 + OLED + 报警 + 串口日志） |
-| [arduino/fish_guard/fish_guard.ino](arduino/fish_guard/fish_guard.ino) | 鱼缸主程序 |
-| [arduino/turbidity_test/turbidity_test.ino](arduino/turbidity_test/turbidity_test.ino) | 浑浊度光学方案独立测试程序 |
-| [鱼缸小卫士-纯面包板浑浊度.md](鱼缸小卫士-纯面包板浑浊度.md) | 不用 Arduino 的浑浊度阈值报警版 |
-| [浑浊度电路图.html](浑浊度电路图.html) | LM393 浑浊度检测电路图 |
+| [鱼缸小卫士-施工文档.md](fish-guard/鱼缸小卫士-施工文档.md) | Arduino 版完整文档（DS18B20 + OLED + 报警 + 串口日志） |
+| [fish_guard.ino](fish-guard/arduino/fish_guard/fish_guard.ino) | 鱼缸主程序 |
+| [turbidity_test.ino](fish-guard/arduino/turbidity_test/turbidity_test.ino) | 浑浊度光学方案独立测试程序 |
+| [鱼缸小卫士-纯面包板浑浊度.md](fish-guard/鱼缸小卫士-纯面包板浑浊度.md) | 不用 Arduino 的浑浊度阈值报警版 |
+| [浑浊度电路图.html](fish-guard/浑浊度电路图.html) | LM393 浑浊度检测电路图 |
 
 ## 目录结构
 
 ```
 learnee/
 ├── README.md
-├── 魔法小夜灯-施工文档.md
-├── 魔法小夜灯电路图.html
-├── 鱼缸小卫士-施工文档.md
-├── 鱼缸小卫士-纯面包板浑浊度.md
-├── 浑浊度电路图.html
-└── arduino/
-    ├── fish_guard/
-    │   └── fish_guard.ino
-    └── turbidity_test/
-        └── turbidity_test.ino
+├── magic-night-light/              # 魔法小夜灯（光控 LED 灯）
+│   ├── 魔法小夜灯-施工文档.md
+│   └── 魔法小夜灯电路图.html
+└── fish-guard/                     # 鱼缸小卫士（水质监测与报警器）
+    ├── 鱼缸小卫士-施工文档.md
+    ├── 鱼缸小卫士-纯面包板浑浊度.md
+    ├── 浑浊度电路图.html
+    └── arduino/
+        ├── fish_guard/
+        │   └── fish_guard.ino
+        └── turbidity_test/
+            └── turbidity_test.ino
 ```
 
 ## 安全提示
