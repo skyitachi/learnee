@@ -1,0 +1,22 @@
+led-dimmer/可变电阻调光-施工文档.md
+  h_5a1c62fd74efa2 125-126
+led-dimmer/可变电阻调光实物图.html
+  h_5a1c62fd74efa2 14
+magic-night-light/魔法小夜灯-施工文档.md
+  h_5a1c62fd74efa2 128-132
+magic-night-light/魔法小夜灯实物图.html
+  h_5a1c62fd74efa2 14
+tools/breadboard_mockup.py
+  h_5a1c62fd74efa2 55-104,153-155,348,356-357,362-364,469,497,536
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ba7e2e0b8bae218af42d584c7c826a99186dfa26",
+  "prompts": {},
+  "humans": {
+    "h_5a1c62fd74efa2": {
+      "author": "skyitachi <skbysp@gmail.com>"
+    }
+  }
+}
