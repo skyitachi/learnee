@@ -70,7 +70,7 @@
     <line x1="500" y1="320" x2="500" y2="330" stroke="#1565c0" stroke-width="2.5"/>
     <path d="M 500 324 L 508 332 L 492 332 Z" fill="#1565c0"/>
     <text x="510" y="348" font-size="12" font-weight="700" fill="#333">E</text>
-    <text x="540" y="315" font-size="15" font-weight="700" fill="#333">PN2222</text>
+    <text x="540" y="315" font-size="15" font-weight="700" fill="#333">2N3904</text>
     <text x="540" y="332" font-size="10.5" fill="#777">NPN</text>
     <!-- 发射极接地 -->
     <line x1="500" y1="332" x2="500" y2="372" stroke="#1565c0" stroke-width="2"/>
@@ -79,18 +79,18 @@
     <line x1="490" y1="392" x2="510" y2="392" stroke="#1565c0" stroke-width="2"/>
   </g>
 
-  <!-- PN2222 引脚顺序（TO-92） -->
+  <!-- 2N3904 引脚顺序（TO-92） -->
   <g>
-    <text x="660" y="200" font-size="14" font-weight="700" fill="#1a1a1a">PN2222 引脚（有字面朝自己）</text>
+    <text x="660" y="200" font-size="14" font-weight="700" fill="#1a1a1a">2N3904 引脚（有字面朝自己）</text>
     <path d="M 660 250 Q 700 205 740 250 Z" fill="#e0e0e0" stroke="#37474f" stroke-width="1.5"/>
-    <text x="700" y="245" font-size="12" font-weight="700" fill="#333" text-anchor="middle">PN2222</text>
+    <text x="700" y="245" font-size="12" font-weight="700" fill="#333" text-anchor="middle">2N3904</text>
     <line x1="672" y1="250" x2="672" y2="298" stroke="#37474f" stroke-width="2"/>
     <line x1="700" y1="250" x2="700" y2="298" stroke="#37474f" stroke-width="2"/>
     <line x1="728" y1="250" x2="728" y2="298" stroke="#37474f" stroke-width="2"/>
-    <text x="672" y="315" font-size="13" font-weight="700" fill="#ef6c00" text-anchor="middle">C</text>
+    <text x="672" y="315" font-size="13" font-weight="700" fill="#1565c0" text-anchor="middle">E</text>
     <text x="700" y="315" font-size="13" font-weight="700" fill="#2e7d32" text-anchor="middle">B</text>
-    <text x="728" y="315" font-size="13" font-weight="700" fill="#1565c0" text-anchor="middle">E</text>
-    <text x="700" y="340" font-size="11" fill="#555" text-anchor="middle">从左到右 C-B-E：C 接 LED，B 接 X，E 接 GND</text>
+    <text x="728" y="315" font-size="13" font-weight="700" fill="#ef6c00" text-anchor="middle">C</text>
+    <text x="700" y="340" font-size="11" fill="#555" text-anchor="middle">从左到右 E-B-C：E 接 GND，B 接 X，C 接 LED</text>
   </g>
 
   <!-- ③ LED 支路 -->
@@ -112,7 +112,7 @@
   </g>
 
   <!-- 提示 -->
-  <text x="60" y="430" font-size="12.5" fill="#555">节点 X 要同时连三样：47kΩ、光敏电阻、三极管基极 B（插在面包板同一行）。</text>
+  <text x="60" y="430" font-size="12.5" fill="#555">节点 X 要同时连三样：47kΩ、光敏电阻、三极管基极 B（插在面包板同一列）。</text>
 </svg>
 </div>
 </body>

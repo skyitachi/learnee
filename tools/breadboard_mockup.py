@@ -308,7 +308,7 @@ def to92(row, c_e, c_b, c_c, num=None, label=None):
              'fill="#2f2f2f" stroke="#111" stroke-width="0.4"/>'
              % (left, body_top + body_h, left, body_top + 4.5, (right - left) / 2, 4.5,
                 right, body_top + 4.5, right, body_top + body_h))
-    o.append(text((left + right) / 2, body_top + body_h - 1.4, 'PN2222', 2.4, '#cfd8dc', weight='600', halo=False))
+    o.append(text((left + right) / 2, body_top + body_h - 1.4, '2N3904', 2.4, '#cfd8dc', weight='600', halo=False))
     for x in xs:
         o.append(_hole_dot(x, y))
     if num:
@@ -503,7 +503,7 @@ def night_light():
             (1, '3×AA 电池盒', '红线→＋轨，黑线→－轨'),
             (2, '47kΩ 电阻', '第 7→10 列 J 行'),
             (3, '光敏电阻', '第 10→13 列 I 行'),
-            (4, 'PN2222 三极管', '第 17/18/19 列 G 行（E-B-C，左→右）'),
+            (4, '2N3904 三极管', '第 17/18/19 列 G 行（E-B-C，左→右）'),
             (5, 'LED', '第 22→23 列 J 行（＋长脚在 23）'),
             (6, '220Ω 电阻', '第 23→27 列 J 行'),
         ],
