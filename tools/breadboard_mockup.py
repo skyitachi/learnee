@@ -530,6 +530,67 @@ def night_light():
     )
 
 
+def night_10k():
+    """没有 47kΩ 时：5 只 10kΩ 串联成 50kΩ（等效 47k）。
+
+    串联链必须挪出上半块——J 行第 13 列与光敏电阻下端（− 轨）同列，
+    链条只要跨过 13 列就会被 − 轨短路，节点 X 变成 20k/10k 分压，灯恒亮。
+    所以整条链放在下半块 A 行第 1–16 列（完全空闲）：
+      · A1 竖直向下接下方 ＋ 轨（A 行是最底行，过程中不经过任何孔）
+      · A16 竖直向上到 F16（只跨凹槽），再水平到 F10
+      · F10 与 J10 同列同块，自动接上节点 X —— 上块除拆掉原 47k 外一根线都不用动
+    """
+    parts = [
+        resistor('A', 1, 4, '', ('棕', '黑', '橙', '金')) + [badge(cx(1) - 4.6, ROW_Y['A'] - 6.2, 2)],
+        resistor('A', 4, 7, '', ('棕', '黑', '橙', '金')),
+        resistor('A', 7, 10, '', ('棕', '黑', '橙', '金')),
+        resistor('A', 10, 13, '', ('棕', '黑', '橙', '金')),
+        resistor('A', 13, 16, '', ('棕', '黑', '橙', '金')),
+        ldr('I', 10, 13, num=3),
+        to92('G', 17, 18, 19, num=4),
+        led('J', 22, 23, num=5),
+        resistor('J', 23, 27, '220Ω', ('红', '红', '棕', '金'), num=6),
+        battery(-100, 96, '3×AA 电池盒 4.5V') + [badge(-64, 89, 1)],
+    ]
+    wires = [
+        ([(cx(1), ROW_Y['A']), (cx(1), RAIL['bp'])], C_RED),
+        ([(cx(16), ROW_Y['A']), (cx(16), ROW_Y['F']), (cx(10), ROW_Y['F']),
+          (cx(10), ROW_Y['J'])], C_GREEN),
+        ([(cx(13), ROW_Y['I']), (cx(13), RAIL['tm'])], C_BLUE),
+        ([(cx(10), ROW_Y['J']), (cx(18), ROW_Y['J']), (cx(18), ROW_Y['G'] - 8.6)], C_GREEN),
+        ([(cx(19), ROW_Y['G']), (cx(19), ROW_Y['H']), (cx(22), ROW_Y['H']),
+          (cx(22), ROW_Y['J'])], C_ORANGE),
+        ([(cx(17), ROW_Y['G']), (cx(17), ROW_Y['F']), (cx(28), ROW_Y['F']),
+          (cx(28), RAIL['tm'])], C_BLUE),
+        ([(cx(27), ROW_Y['J']), (cx(27), RAIL['tp'])], C_RED),
+        ([(-26, 103), (-6, 103), (-6, RAIL['tp']), (cx(1), RAIL['tp'])], C_RED),
+        ([(-26, 118), (1.2, 118), (1.2, RAIL['tm']), (cx(1), RAIL['tm'])], '#212121'),
+    ]
+
+    def x_mark(ox, oy):
+        x, y = px(ox + cx(10)), px(oy + ROW_Y['J'] - 7.5)
+        return ('<circle cx="%.1f" cy="%.1f" r="6" fill="%s"/>'
+                '<text x="%.1f" y="%.1f" font-size="13" font-weight="700" fill="%s">'
+                '节点 X</text>' % (x, y, C_GREEN, x + 9, y + 4.5, C_GREEN))
+
+    return dict(
+        title='魔法小夜灯 · 实物接线图（10kΩ×5 串联版）',
+        subtitle='手头没有 47kΩ 时：5 只 10kΩ 在下半块 A 行串成 50kΩ；上块只拆掉原来那只 47k，其余不动',
+        parts=parts, wires=wires, notes=[x_mark],
+        labels=[to92_labels('G', 17, 18, 19), base_mark(18, 19)],
+        legend=[(C_RED, '＋4.5V'), (C_BLUE, 'GND'), (C_GREEN, '10k×5 串联'),
+                (C_ORANGE, '集电极 C → LED')],
+        table=[
+            (1, '3×AA 电池盒', '红线→＋轨，黑线→－轨'),
+            (2, '10kΩ ×5', '第 1–16 列 A 行串联（＝50kΩ）'),
+            (3, '光敏电阻', '第 10→13 列 I 行'),
+            (4, '2N3904 三极管', '第 17/18/19 列 G 行（E-B-C，左→右）'),
+            (5, 'LED', '第 22→23 列 J 行（＋长脚在 23）'),
+            (6, '220Ω 电阻', '第 23→27 列 J 行'),
+        ],
+    )
+
+
 def dimmer():
     """电位器调光：220Ω 限流 + 10kΩ 电位器（变阻器接法）+ LED
        链路：+V → 220Ω → 电位器 A → 电阻体 → W → 短接 → B → LED 阳极 → 阴极 → −V
@@ -569,6 +630,7 @@ def dimmer():
 
 CIRCUITS = {
     'night': (night_light, '魔法小夜灯 · 实物接线图'),
+    'night10k': (night_10k, '魔法小夜灯 · 实物接线图（10k×5 版）'),
     'dimmer': (dimmer, '可变电阻调光 · 实物接线图'),
 }
 
