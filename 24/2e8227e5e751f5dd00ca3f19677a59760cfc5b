@@ -1,0 +1,20 @@
+README.md
+  h_5a1c62fd74efa2 25,52-53
+magic-night-light/魔法小夜灯-施工文档.md
+  h_5a1c62fd74efa2 54,299-315,363-364
+magic-night-light/魔法小夜灯实物图-10k串联版.html
+  h_5a1c62fd74efa2 1-17
+tools/breadboard_mockup.py
+  h_5a1c62fd74efa2 533-593,633
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "242e8227e5e751f5dd00ca3f19677a59760cfc5b",
+  "prompts": {},
+  "humans": {
+    "h_5a1c62fd74efa2": {
+      "author": "skyitachi <skbysp@gmail.com>"
+    }
+  }
+}
