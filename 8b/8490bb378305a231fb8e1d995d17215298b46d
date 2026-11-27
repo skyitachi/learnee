@@ -1,0 +1,20 @@
+README.md
+  h_5a1c62fd74efa2 7,9-18,26,44-47
+led-dimmer/可变电阻调光-施工文档.md
+  h_5a1c62fd74efa2 1-210
+led-dimmer/可变电阻调光实物图.html
+  h_5a1c62fd74efa2 1-17
+tools/breadboard_mockup.py
+  h_5a1c62fd74efa2 206-244,459-500,503-515
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8b8490bb378305a231fb8e1d995d17215298b46d",
+  "prompts": {},
+  "humans": {
+    "h_5a1c62fd74efa2": {
+      "author": "skyitachi <skbysp@gmail.com>"
+    }
+  }
+}
