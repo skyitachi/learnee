@@ -203,6 +203,45 @@ def led(row, c_cathode, c_anode, num=None):
     return o
 
 
+def pot(row, c_a, c_w, c_b, num=None, label=None):
+    """旋转式电位器（RV09 带旋钮型）：三脚等距插三列，本体俯视为方块 + 旋钮。
+    c_a / c_b 为电阻体两端，c_w 为中间滑动端。本体尺寸按实物 9.5mm 折算（约 3.5 列）。"""
+    y = ROW_Y[row]
+    xa, xw, xb = cx(c_a), cx(c_w), cx(c_b)
+    left, right = xa - 7.5, xb + 7.5
+    bottom, top = y - 7.0, y - 20.0
+    cy = (bottom + top) / 2
+    o = []
+    for x in (xa, xw, xb):
+        o.append('<line x1="%.2f" y1="%.2f" x2="%.2f" y2="%.2f" stroke="#9e9e9e" '
+                 'stroke-width="0.85"/>' % (x, y, x, bottom))
+    o.append('<rect x="%.2f" y="%.2f" width="%.2f" height="%.2f" rx="1.8" fill="#1565c0" '
+             'stroke="#0d47a1" stroke-width="0.5"/>'
+             % (left, top, right - left, bottom - top))
+    # 旋钮：外圈 + 指针（指示当前转到哪个位置）
+    o.append('<circle cx="%.2f" cy="%.2f" r="5.2" fill="#e3f2fd" stroke="#0d47a1" '
+             'stroke-width="0.6"/>' % (xw, cy))
+    o.append('<circle cx="%.2f" cy="%.2f" r="1.1" fill="#0d47a1"/>' % (xw, cy))
+    o.append('<line x1="%.2f" y1="%.2f" x2="%.2f" y2="%.2f" stroke="#0d47a1" '
+             'stroke-width="1.0" stroke-linecap="round"/>'
+             % (xw, cy, xw + 3.9, cy - 2.9))
+    o.append(_hole_dot(xa, y) + _hole_dot(xw, y) + _hole_dot(xb, y))
+    if label:
+        o.append(text((left + right) / 2, top - 2.4, label, 3.2, '#0d47a1', weight='600'))
+    if num:
+        o.append(badge(right + 3.6, top + 2.0, num))
+    return o
+
+
+def pot_labels(row, c_a, c_w, c_b):
+    """电位器引脚字母（单独一层，避免被跳线盖住）"""
+    y = ROW_Y[row]
+    o = []
+    for c, lab, col in ((c_a, 'A', '#0d47a1'), (c_w, 'W', C_GREEN), (c_b, 'B', '#0d47a1')):
+        o.append(text(cx(c) - 2.4, y + 5.4, lab, 3.0, col, weight='700'))
+    return o
+
+
 def to92(row, c_e, c_b, c_c, num=None, label=None):
     """TO-92 三极管：三腿相邻三列垂直插入，本体是半圆 D 形。
     引脚顺序按实物：平面朝自己、引脚朝下，左→右为 E-B-C
@@ -417,10 +456,61 @@ def night_light():
     )
 
 
+def dimmer():
+    """电位器调光：220Ω 限流 + 10kΩ 电位器（变阻器接法）+ LED
+       链路：+V → 220Ω → 电位器 A → 电阻体 → W → 短接 → B → LED 阳极 → 阴极 → −V
+       用 A-W 这一段当可变电阻；B 与 W 短接，滑动端接触不良时不会开路。"""
+    parts = [
+        resistor('J', 7, 10, '220Ω', ('红', '红', '棕', '金'), num=1),
+        pot('J', 14, 15, 16, num=2),
+        led('J', 21, 20) + [badge(cx(20.5), ROW_Y['J'] - 10.6, 3)],
+        battery(-100, 96, '3×AA 电池盒 4.5V') + [badge(-64, 89, 4)],
+    ]
+    wires = [
+        ([(cx(7), ROW_Y['J']), (cx(7), RAIL['tp'])], C_RED),                        # ① 220Ω → ＋轨
+        ([(cx(10), ROW_Y['J']), (cx(14), ROW_Y['J'])], C_ORANGE),                   # ② → 电位器 A
+        ([(cx(15), ROW_Y['J']), (cx(15), ROW_Y['J'] + 3.0),
+          (cx(16), ROW_Y['J'] + 3.0), (cx(16), ROW_Y['J'])], '#4a4a4a'),           # ② W—B 短接
+        ([(cx(16), ROW_Y['J']), (cx(20), ROW_Y['J'])], C_ORANGE),                   # ② B → LED 阳极
+        ([(cx(21), ROW_Y['J']), (cx(21), RAIL['tm'])], C_BLUE),                     # ③ LED 阴极 → −轨
+        ([(-26, 103), (-6, 103), (-6, RAIL['tp']), (cx(1), RAIL['tp'])], C_RED),     # ④ 电池 ＋
+        ([(-26, 118), (1.2, 118), (1.2, RAIL['tm']), (cx(1), RAIL['tm'])], '#212121'),  # ④ 电池 −
+    ]
+
+    return dict(
+        title='可变电阻调光 · 实物接线图（面包板）',
+        subtitle='电流从左往右走：＋轨 → 220Ω → 电位器 → LED → −轨；拧旋钮就改变亮度',
+        parts=parts, wires=wires,
+        labels=[pot_labels('J', 14, 15, 16)],
+        legend=[(C_RED, '＋4.5V'), (C_BLUE, 'GND'),
+                (C_ORANGE, '可调段（串联）'), ('#555555', 'W—B 短接线')],
+        table=[
+            (1, '220Ω 电阻', '第 7→10 列 J 行（限流，保护 LED）'),
+            (2, '1kΩ 电位器（B1k）', '第 14/15/16 列 J 行；W 与 B 用短线短接'),
+            (3, 'LED', '第 20→21 列 J 行（＋长脚在 20）'),
+            (4, '3×AA 电池盒', '红线→＋轨，黑线→−轨'),
+        ],
+    )
+
+
+CIRCUITS = {
+    'night': (night_light, '魔法小夜灯 · 实物接线图'),
+    'dimmer': (dimmer, '可变电阻调光 · 实物接线图'),
+}
+
 if __name__ == '__main__':
     import sys, os
-    svg = build(night_light())
-    out = sys.argv[1] if len(sys.argv) > 1 else '/tmp/小夜灯实物图.html'
-    os.makedirs(os.path.dirname(out) or '.', exist_ok=True)
-    open(out, 'w', encoding='utf-8').write(page(svg, '魔法小夜灯 · 实物接线图'))
+    args = sys.argv[1:]
+    key = 'night'
+    if args and not args[0].endswith('.html'):
+        key = args[0]
+        args = args[1:]
+    if key not in CIRCUITS:
+        print('usage: breadboard_mockup.py [%s] [out.html]' % '|'.join(CIRCUITS))
+        raise SystemExit(2)
+    fn, title = CIRCUITS[key]
+    svg = build(fn())
+    out = args[0] if args else '/tmp/%s.html' % key
+    os.makedirs(os.path.dirname(os.path.abspath(out)) or '.', exist_ok=True)
+    open(out, 'w', encoding='utf-8').write(page(svg, title))
     print('written:', out, len(svg), 'bytes')
