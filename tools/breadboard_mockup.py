@@ -52,6 +52,56 @@ def rounded_path(pts, r=5.0):
     return ' '.join(d)
 
 
+def route_path(pts, r=5.0):
+    """折线 → path。转角做圆角；竖直段跨过电源轨时绕一个小拱，
+    表示"从轨上方跨过去、没有插进这个孔"（否则直线穿过轨孔会被读成接到那条轨上）。"""
+    n = len(pts)
+    if n < 2:
+        return ''
+    lens, dirs = [], []
+    for i in range(n - 1):
+        dx, dy = pts[i + 1][0] - pts[i][0], pts[i + 1][1] - pts[i][1]
+        L = math.hypot(dx, dy) or 1e-6
+        lens.append(L)
+        dirs.append((dx / L, dy / L))
+    cr = [0.0] * n
+    for i in range(1, n - 1):
+        cr[i] = min(r, lens[i - 1] / 2, lens[i] / 2)
+
+    d = ['M%.2f,%.2f' % pts[0]]
+    for i in range(n - 1):
+        p0, p1 = pts[i], pts[i + 1]
+        ux, uy = dirs[i]
+        a = cr[i] if i > 0 else 0.0
+        b = cr[i + 1] if i < n - 1 else 0.0
+        sx, sy = p0[0] + ux * a, p0[1] + uy * a
+        ex, ey = p1[0] - ux * b, p1[1] - uy * b
+
+        hops = []
+        if abs(ux) < 1e-6 and 3.5 < sx < BOARD_W - 3.5:
+            lo, hi = sorted((sy, ey))
+            hops = [v for v in sorted(RAIL.values()) if lo + 1.0 < v < hi - 1.0]
+            if ey < sy:
+                hops.reverse()
+
+        for v in hops:
+            h, bump = 4.8, 8.0
+            side = 1 if sx < BOARD_W / 2 else -1
+            if uy < 0:
+                d.append('L%.2f,%.2f' % (sx, v + h))
+                d.append('Q%.2f,%.2f %.2f,%.2f' % (sx + side * bump, v, sx, v - h))
+            else:
+                d.append('L%.2f,%.2f' % (sx, v - h))
+                d.append('Q%.2f,%.2f %.2f,%.2f' % (sx + side * bump, v, sx, v + h))
+        d.append('L%.2f,%.2f' % (ex, ey))
+
+        if i < n - 2:
+            nx = pts[i + 2][0] + dirs[i + 1][0] * cr[i + 1]
+            ny = pts[i + 2][1] + dirs[i + 1][1] * cr[i + 1]
+            d.append('Q%.2f,%.2f %.2f,%.2f' % (p1[0], p1[1], nx, ny))
+    return ' '.join(d)
+
+
 def text(x, y, s, size=3.4, color=C_INK, anchor='middle', weight='400', halo=True):
     h = ('stroke="#fdfdfb" stroke-width="1.6" stroke-linejoin="round" paint-order="stroke" '
          if halo else '')
@@ -100,9 +150,9 @@ def draw_board():
         for y in RAIL.values():
             o.append('<circle cx="%.2f" cy="%.2f" r="1.45" fill="#3c3c3c"/>' % (cx(c), y))
 
-    # 轨标记
-    o.append(text(10.5, RAIL['tp'] + 1.2, '＋', 3.4, C_RED, weight='700'))
-    o.append(text(10.5, RAIL['tm'] + 1.2, '－', 3.4, C_BLUE, weight='700'))
+    # 轨标记（放右端空白处：左端被电池引线压住，且此处不受跳线影响）
+    o.append(text(BOARD_W - 9, RAIL['tp'] + 1.2, '＋', 3.4, C_RED, weight='700'))
+    o.append(text(BOARD_W - 9, RAIL['tm'] + 1.2, '－', 3.4, C_BLUE, weight='700'))
     return o
 
 
@@ -295,7 +345,7 @@ def battery(x, y, label='3×AA 电池盒  4.5V'):
 
 
 def wire(pts, color, width=1.15, dash=None, opacity=1.0):
-    d = rounded_path(pts)
+    d = route_path(pts)
     extra = ' stroke-dasharray="%s"' % dash if dash else ''
     return ('<path d="%s" fill="none" stroke="%s" stroke-width="%.2f" stroke-linecap="round" '
             'stroke-linejoin="round" opacity="%.2f"%s/>'
@@ -303,11 +353,15 @@ def wire(pts, color, width=1.15, dash=None, opacity=1.0):
 
 
 def jumper(pts, color, casing=False):
-    """跳线：先画阴影；casing=True 时再垫一条底色，形成"压在另一根线上"的效果"""
+    """跳线：先画阴影；casing=True 时再垫一条底色，形成"压在另一根线上"的效果。
+    端点落在电源轨上时补一个同色圆点，明确"插在这个孔里"。"""
     out = [wire(pts, '#00000018', 2.1)]
     if casing:
         out.append(wire(pts, C_PAPER, 3.6))
     out.append(wire(pts, color))
+    for x, y in (pts[0], pts[-1]):
+        if 3.5 < x < BOARD_W - 3.5 and any(abs(y - v) < 0.6 for v in RAIL.values()):
+            out.append('<circle cx="%.2f" cy="%.2f" r="1.9" fill="%s"/>' % (x, y, color))
     return out
 
 
@@ -412,7 +466,7 @@ def night_light():
        分压器 J/I 行第 7–13 列；三极管 G 行第 17/18/19 列（E-B-C，按实物引脚顺序）；
        LED + 220Ω 放 J 行第 22–27 列；基极从 J 行拉过去，集电极走 H 行拉过去。"""
     parts = [
-        resistor('J', 7, 10, '47kΩ', ('黄', '紫', '橙', '金'), num=2),
+        resistor('J', 7, 10, '47kΩ', ('黄', '紫', '橙', '金')) + [badge(cx(7) - 4.6, ROW_Y['J'] - 6.0, 2)],
         ldr('I', 10, 13, num=3),
         to92('G', 17, 18, 19, num=4),
         led('J', 22, 23, num=5),
@@ -440,7 +494,7 @@ def night_light():
 
     return dict(
         title='魔法小夜灯 · 实物接线图（面包板）',
-        subtitle='元件按编号插、跳线照颜色走；插完按施工文档第 3 节再核对一遍',
+        subtitle='元件按编号插、跳线照颜色走；线端有实心圆点＝插进这个孔；插完按施工文档第 3 节核对',
         parts=parts, wires=wires, notes=[x_mark],
         labels=[to92_labels('G', 17, 18, 19)],
         legend=[(C_RED, '＋4.5V'), (C_BLUE, 'GND'), (C_GREEN, '节点 X → 基极 B'),
@@ -479,7 +533,7 @@ def dimmer():
 
     return dict(
         title='可变电阻调光 · 实物接线图（面包板）',
-        subtitle='电流从左往右走：＋轨 → 220Ω → 电位器 → LED → −轨；拧旋钮就改变亮度',
+        subtitle='电流从左往右：＋轨 → 220Ω → 电位器 → LED → −轨；线端实心圆点＝插进这个孔',
         parts=parts, wires=wires,
         labels=[pot_labels('J', 14, 15, 16)],
         legend=[(C_RED, '＋4.5V'), (C_BLUE, 'GND'),
