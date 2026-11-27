@@ -312,7 +312,7 @@ def to92(row, c_e, c_b, c_c, num=None, label=None):
     for x in xs:
         o.append(_hole_dot(x, y))
     if num:
-        o.append(badge(right + 4.4, body_top - 1.6, num))
+        o.append(badge(left - 4.6, body_top + 3.2, num))
     return o
 
 
@@ -322,6 +322,26 @@ def to92_labels(row, c_e, c_b, c_c):
     o = []
     for c, lab, col in zip((c_e, c_b, c_c), ('E', 'B', 'C'), (C_BLUE, C_GREEN, C_ORANGE)):
         o.append(text(cx(c) - 2.4, y + 5.4, lab, 3.0, col, weight='700'))
+    return o
+
+
+def base_mark(c_b=18, c_c=19, row='J'):
+    """基极跳线落点旁的危险提示。
+
+    面包板同一列（J-I-H-G-F 五孔）是导通的，所以基极跳线插在 J 行第 19 列，
+    电气上等于直接插在集电极 C 上——分压器绕过三极管灌进 LED，灯恒亮。
+    这是"灯常亮"最高频的机械性错误，必须在图上标出来。
+    """
+    y = ROW_Y[row]
+    xb, xc = cx(c_b), cx(c_c)
+    o = ['<circle cx="%.2f" cy="%.2f" r="3.0" fill="none" stroke="%s" stroke-width="1.0" '
+         'stroke-dasharray="1.6 1.2"/>' % (xb, y, C_GREEN),
+         text(xb, y - 4.4, 'B 插这里', 2.6, C_GREEN, weight='700')]
+    r = 2.3
+    o.append('<path d="M%.2f %.2f L%.2f %.2f M%.2f %.2f L%.2f %.2f" stroke="#c62828" '
+             'stroke-width="1.05" stroke-linecap="round"/>'
+             % (xc - r, y - r, xc + r, y + r, xc + r, y - r, xc - r, y + r))
+    o.append(text(xc + 4.8, y + 3.6, 'C 别插', 2.5, '#c62828', weight='700', anchor='start'))
     return o
 
 
@@ -496,7 +516,7 @@ def night_light():
         title='魔法小夜灯 · 实物接线图（面包板）',
         subtitle='元件按编号插、跳线照颜色走；线端有实心圆点＝插进这个孔；插完按施工文档第 3 节核对',
         parts=parts, wires=wires, notes=[x_mark],
-        labels=[to92_labels('G', 17, 18, 19)],
+        labels=[to92_labels('G', 17, 18, 19), base_mark(18, 19)],
         legend=[(C_RED, '＋4.5V'), (C_BLUE, 'GND'), (C_GREEN, '节点 X → 基极 B'),
                 (C_ORANGE, '集电极 C → LED')],
         table=[

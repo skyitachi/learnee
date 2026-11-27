@@ -30,7 +30,7 @@
 
   <!-- 底部 GND 轨 -->
   <line x1="60" y1="450" x2="840" y2="450" stroke="#1565c0" stroke-width="4"/>
-  <text x="60" y="476" font-size="13" fill="#1565c0" font-weight="600">GND（接 − 轨）</text>
+  <text x="60" y="476" font-size="13" fill="#1565c0" font-weight="600">GND（接 − 轨）· 图中三横线接地符号都表示接到这条轨</text>
 
   <!-- ① 分压支路 -->
   <g>
@@ -40,10 +40,11 @@
     <text x="308" y="147" font-size="12" fill="#5d4037">47kΩ</text>
     <line x1="280" y1="152" x2="280" y2="200" stroke="#333" stroke-width="2"/>
     <circle cx="280" cy="205" r="5" fill="#2e7d32"/>
-    <text x="292" y="210" font-size="13" font-weight="700" fill="#2e7d32">X</text>
+    <text x="300" y="196" font-size="12" font-weight="700" fill="#2e7d32">节点 X</text>
     <!-- LDR -->
     <rect x="262" y="220" width="36" height="40" fill="#dbe4ee" stroke="#5c6bc0" stroke-width="1.5"/>
-    <line x1="280" y1="205" x2="280" y2="300" stroke="#333" stroke-width="2"/>
+    <line x1="280" y1="205" x2="280" y2="220" stroke="#333" stroke-width="2"/>
+    <line x1="280" y1="260" x2="280" y2="300" stroke="#333" stroke-width="2"/>
     <line x1="342" y1="226" x2="324" y2="236" stroke="#5c6bc0" stroke-width="1.8"/>
     <line x1="342" y1="252" x2="324" y2="242" stroke="#5c6bc0" stroke-width="1.8"/>
     <text x="348" y="266" font-size="12" fill="#333">LDR（光敏电阻）</text>
@@ -56,24 +57,25 @@
   <!-- 节点 X → 基极 控制线 -->
   <path d="M 280 205 L 440 205 L 440 300 L 470 300" fill="none" stroke="#2e7d32" stroke-width="2.5"/>
 
-  <!-- ② 三极管 -->
+  <!-- ② 三极管（NPN：C 在上、E 在下，两侧斜向引出） -->
   <g>
     <circle cx="500" cy="300" r="28" fill="#fff" stroke="#37474f" stroke-width="2"/>
-    <line x1="500" y1="280" x2="500" y2="320" stroke="#37474f" stroke-width="2.5"/>
+    <!-- 基极板 -->
+    <line x1="500" y1="288" x2="500" y2="312" stroke="#37474f" stroke-width="3.5"/>
     <!-- 基极 B -->
     <line x1="472" y1="300" x2="500" y2="300" stroke="#2e7d32" stroke-width="2.5"/>
     <text x="455" y="293" font-size="12" font-weight="700" fill="#333">B</text>
     <!-- 集电极 C -->
-    <line x1="500" y1="280" x2="500" y2="272" stroke="#ef6c00" stroke-width="2.5"/>
-    <text x="510" y="268" font-size="12" font-weight="700" fill="#333">C</text>
-    <!-- 发射极 E -->
-    <line x1="500" y1="320" x2="500" y2="330" stroke="#1565c0" stroke-width="2.5"/>
-    <path d="M 500 324 L 508 332 L 492 332 Z" fill="#1565c0"/>
-    <text x="510" y="348" font-size="12" font-weight="700" fill="#333">E</text>
+    <path d="M 500 272 L 516 272 L 516 278 L 500 294" fill="none" stroke="#ef6c00" stroke-width="2.5"/>
+    <text x="521" y="267" font-size="12" font-weight="700" fill="#ef6c00">C</text>
+    <!-- 发射极 E（箭头朝外） -->
+    <path d="M 500 306 L 516 322 L 516 330 L 500 330" fill="none" stroke="#1565c0" stroke-width="2.5"/>
+    <polygon points="512.5,318.5 505.1,315.3 509.3,311.1" fill="#1565c0"/>
+    <text x="521" y="336" font-size="12" font-weight="700" fill="#1565c0">E</text>
     <text x="540" y="315" font-size="15" font-weight="700" fill="#333">2N3904</text>
     <text x="540" y="332" font-size="10.5" fill="#777">NPN</text>
     <!-- 发射极接地 -->
-    <line x1="500" y1="332" x2="500" y2="372" stroke="#1565c0" stroke-width="2"/>
+    <line x1="500" y1="330" x2="500" y2="372" stroke="#1565c0" stroke-width="2"/>
     <line x1="468" y1="372" x2="532" y2="372" stroke="#1565c0" stroke-width="2"/>
     <line x1="478" y1="382" x2="522" y2="382" stroke="#1565c0" stroke-width="2"/>
     <line x1="490" y1="392" x2="510" y2="392" stroke="#1565c0" stroke-width="2"/>
@@ -99,16 +101,15 @@
     <line x1="500" y1="90" x2="500" y2="132" stroke="#d32f2f" stroke-width="2.5"/>
     <rect x="480" y="132" width="40" height="20" fill="#e8cfa6" stroke="#8d6e63" stroke-width="1.5"/>
     <text x="528" y="147" font-size="12" fill="#5d4037">220Ω</text>
-    <line x1="500" y1="152" x2="500" y2="190" stroke="#d32f2f" stroke-width="2"/>
-    <!-- LED 符号：阳极上、阴极下 -->
-    <polygon points="480,245 520,245 500,192" fill="#ffcdd2" stroke="#d32f2f" stroke-width="2"/>
-    <line x1="472" y1="245" x2="528" y2="245" stroke="#d32f2f" stroke-width="2.5"/>
-    <line x1="500" y1="204" x2="520" y2="204" stroke="#d32f2f" stroke-width="1.6"/>
-    <line x1="500" y1="224" x2="520" y2="224" stroke="#d32f2f" stroke-width="1.6"/>
-    <text x="530" y="222" font-size="12" fill="#333">LED</text>
-    <text x="534" y="238" font-size="10.5" fill="#777">长脚＋</text>
+    <line x1="500" y1="152" x2="500" y2="192" stroke="#d32f2f" stroke-width="2"/>
+    <!-- LED 符号：三角形尖朝下（阳极在上、阴极在下），电流自上而下 -->
+    <polygon points="478,192 522,192 500,242" fill="#ffcdd2" stroke="#d32f2f" stroke-width="2"/>
+    <line x1="470" y1="242" x2="530" y2="242" stroke="#d32f2f" stroke-width="3"/>
+    <text x="540" y="182" font-size="11.5" font-weight="700" fill="#c62828">长脚 ＋ 阳极</text>
+    <text x="540" y="218" font-size="12" fill="#333">LED</text>
+    <text x="540" y="258" font-size="11.5" font-weight="700" fill="#1565c0">短脚 − 阴极</text>
     <!-- LED 阴极 → 集电极 -->
-    <line x1="500" y1="245" x2="500" y2="272" stroke="#ef6c00" stroke-width="2.5"/>
+    <line x1="500" y1="242" x2="500" y2="272" stroke="#ef6c00" stroke-width="2.5"/>
   </g>
 
   <!-- 提示 -->
